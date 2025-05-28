@@ -26,6 +26,8 @@ INSTALLED_APPS = [
 
     'letters.apps.LettersConfig',
     'botbot.apps.BotbotConfig',
+    'rest_framework',
+
 ]
 
 MIDDLEWARE = [
@@ -126,3 +128,12 @@ EMAIL_PORT = 587  # Use 465 for SSL (with EMAIL_USE_TLS=False, EMAIL_USE_SSL=Tru
 EMAIL_HOST_USER = "kiarash.github@gmail.com"  # Your full email
 EMAIL_HOST_PASSWORD = "uopt vqpk bwoi wflu"  # App password (no spaces if copied literally)
 EMAIL_USE_TLS = True  # For port 587 (False if using SSL/465)
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'check-unread-letters-every-5-mins': {
+        'task': 'letters.tasks.check_unread_letters',
+        'schedule': crontab(minute='*/5'),  # every 5 minutes
+    },
+}
