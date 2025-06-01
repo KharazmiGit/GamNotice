@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import SummaryLetter
 from .serializers import SummaryLetterSerializer
 
+
 class UnreadLettersView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -12,3 +13,6 @@ class UnreadLettersView(APIView):
         ser = SummaryLetterSerializer(qs, many=True)
         qs.update(sent=True)
         return Response({'unread': ser.data})
+
+
+

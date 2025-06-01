@@ -1,9 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+from botbot.models import GamUser
 
 
 class SummaryLetter(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(GamUser, on_delete=models.CASCADE, null=True, related_name='user_letter')
     sender = models.CharField(max_length=200)
     receiver = models.CharField(max_length=200)
     letter_id = models.CharField(max_length=10)
