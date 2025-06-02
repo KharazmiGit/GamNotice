@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import UnreadLettersView
+from .views import  user_letter_counts
 
 urlpatterns = [
-    path('api/unread-letters/', UnreadLettersView.as_view(), name='unread_letters'),
+    path('test/',user_letter_counts,name='test'),
 ]
