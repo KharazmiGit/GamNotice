@@ -1,9 +1,8 @@
 from django.db.models import Count, Q
 from django.http import JsonResponse
 import requests
-
 from botbot.models import GamUser
-
+from letters.models import SummaryLetter
 
 def user_letter_counts(request):
     # Annotate only unsent letters per user
@@ -20,6 +19,9 @@ def user_letter_counts(request):
             "letter_count": user.letter_count,
             "desktop_ip": user.desktop_ip
         })
+
+        # Properly update all unsent letters for the user
+        SummaryLetter.objects.filter(user=user, sent=False).update(sent=True)
 
     # Send notifications
     for user in user_info:

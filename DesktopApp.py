@@ -5,6 +5,18 @@ from plyer import notification
 import os
 import requests
 import logging
+import sys
+
+# ───────────────
+# **Important PyInstaller‐hack**:
+# Force‐import the Windows notification back‐end so PyInstaller bundles it.
+# If you’re on macOS, use plyer.platforms.osx.notification instead; on Linux,
+# plyer.platforms.linux.notification. Adjust to your target OS.
+try:
+    import plyer.platforms.win.notification
+except ImportError:
+    pass
+# ───────────────
 
 # Configure logging
 logging.basicConfig(
@@ -37,7 +49,11 @@ def notification_worker():
 
 
 # Creating and starting the notification worker thread
-notification_thread = Thread(target=notification_worker, daemon=True, name="NotificationWorker")
+notification_thread = Thread(
+    target=notification_worker,
+    daemon=True,
+    name="NotificationWorker"
+)
 notification_thread.start()
 
 
@@ -65,7 +81,17 @@ def shutdown():
 
 
 if __name__ == '__main__':
-    logging.info("Starting application...")
+    # If frozen by PyInstaller, sys.frozen is True
+    if getattr(sys, 'frozen', False):
+        logging.info("Starting application in frozen (EXE) mode.")
+    else:
+        logging.info("Starting application in normal (script) mode.")
     # Send test notification on startup
     notification_queue.put("سرویس نوتیفیکیشن فعال شد! (Notification service started)")
     app.run(host='0.0.0.0', port=5000)
+
+
+
+# run this ==> #pyinstaller --onefile --name gamma_notifier \
+            # --hidden-import=plyer.platforms.win.notification \
+            # notifier.py

@@ -11,6 +11,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.firefox import GeckoDriverManager
 from letters.models import SummaryLetter
+from letters.views import user_letter_counts
 from .models import GamUser
 
 
@@ -119,7 +120,7 @@ def scrape_all_users(request):
     for user in all_users:
         scrape_letters_for_user(username=user.username, user_id=user.id, password=user.password)
         list.append(user.username)
-
+    user_letter_counts(request)
     return JsonResponse({'status': 'success', 'users': list})
 
 # endregion

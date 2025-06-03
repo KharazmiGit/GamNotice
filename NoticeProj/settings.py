@@ -24,8 +24,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # apps
     'letters.apps.LettersConfig',
     'botbot.apps.BotbotConfig',
+    'home.apps.HomeConfig',
+
+    # frameworks
     'rest_framework',
 
 ]
@@ -45,7 +49,7 @@ ROOT_URLCONF = 'NoticeProj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -115,7 +119,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    "static/",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -128,12 +136,3 @@ EMAIL_PORT = 587  # Use 465 for SSL (with EMAIL_USE_TLS=False, EMAIL_USE_SSL=Tru
 EMAIL_HOST_USER = "kiarash.github@gmail.com"  # Your full email
 EMAIL_HOST_PASSWORD = "uopt vqpk bwoi wflu"  # App password (no spaces if copied literally)
 EMAIL_USE_TLS = True  # For port 587 (False if using SSL/465)
-
-from celery.schedules import crontab
-
-CELERY_BEAT_SCHEDULE = {
-    'check-unread-letters-every-5-mins': {
-        'task': 'letters.tasks.check_unread_letters',
-        'schedule': crontab(minute='*/5'),  # every 5 minutes
-    },
-}
