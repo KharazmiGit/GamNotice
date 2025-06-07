@@ -90,8 +90,6 @@ if __name__ == '__main__':
     notification_queue.put("سرویس نوتیفیکیشن فعال شد! (Notification service started)")
     app.run(host='0.0.0.0', port=5000)
 
-
-
 # run this ==> #pyinstaller --onefile --name gamma_notifier \
-            # --hidden-import=plyer.platforms.win.notification \
-            # notifier.py
+# --hidden-import=plyer.platforms.win.notification \
+# notifier.py
