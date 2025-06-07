@@ -4,6 +4,7 @@ import requests
 from botbot.models import GamUser
 from letters.models import SummaryLetter
 
+
 def user_letter_counts(request):
     # Annotate only unsent letters per user
     user_data = GamUser.objects.annotate(

@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.firefox import GeckoDriverManager
-from letters.models import SummaryLetter
+from letters.models import SummaryLetter, LetterArchive
 from letters.views import user_letter_counts
 from .models import GamUser
 
@@ -44,6 +44,8 @@ def scrape_letters_for_user(username, password, user_id):
         total_pages = int(WebDriverWait(wd, 20).until(
             EC.visibility_of_element_located((By.ID, "ext-gen75"))
         ).text.split()[-1])
+
+        print(f"total pages : {total_pages}")
 
         for current_page in range(1, total_pages + 1):
             receiver_names = WebDriverWait(wd, 30).until(
@@ -121,6 +123,25 @@ def scrape_all_users(request):
         scrape_letters_for_user(username=user.username, user_id=user.id, password=user.password)
         list.append(user.username)
     user_letter_counts(request)
+    archive_sent_letters()
     return JsonResponse({'status': 'success', 'users': list})
 
+
 # endregion
+
+def archive_sent_letters():
+    filtered_letters = SummaryLetter.objects.filter(sent=True)
+
+    # Prepare archive entries
+    archive_entries = [
+        LetterArchive(
+            user=letter.user,
+            letter_id=letter.letter_id,
+            sent_time=letter.sent_time
+        )
+        for letter in filtered_letters
+    ]
+
+    # Bulk create and delete
+    LetterArchive.objects.bulk_create(archive_entries)
+    filtered_letters.delete()
